@@ -70,7 +70,8 @@ public class LogicParser {
             if (prevToken != null) {
                 if (token.type == prevToken.type &&
                         (token.type == Token.Type.SYMBOL ||
-                                token.type == Token.Type.OPERATOR)) {
+                                token.type == Token.Type.OPERATOR ||
+                                token.type == Token.Type.NEGATION)) {
                     throw new LogicParseException("Cannot have two " + token.type.toString().toLowerCase() + "s in a row", i);
                 }
                 if (token.type == Token.Type.RPAREN &&
@@ -119,8 +120,8 @@ public class LogicParser {
                 .collect(Collectors.toList()));
     }
 
-    private LogicExpression buildTree(int depth, List<Token> tokens) {
-        tokens = new ArrayList<>(tokens);
+    private LogicExpression buildTree(int depth, List<Token> tokenList) {
+        List<Token> tokens = new ArrayList<>(tokenList);
 //        for (int i = 0; i < depth; i++) System.out.print('\t');
 //        System.out.println(tokens);
         Optional<Token> rootOperatorOptional = tokens.stream()
@@ -130,7 +131,8 @@ public class LogicParser {
                             LogicOperator operator = LogicOperator.getOperator(token.content.charAt(0));
                             if (operator == null) throw new IllegalArgumentException("Unknown operator token");
                             return -operator.ordinal();
-                        }));
+                        })
+                        .<Integer>thenComparing((o) -> -tokens.indexOf(o)));
         if (!rootOperatorOptional.isPresent()) {
             boolean negated = tokens.get(0).type == Token.Type.NEGATION;
             return new LogicSymbol(tokens.get(negated ? 1 : 0).content, negated);
