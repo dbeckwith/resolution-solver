@@ -2,6 +2,12 @@ package net.sonaxaton.resolutionsolver;
 
 public class LogicClause extends LogicExpression {
 
+    private static boolean ALL_PARENS = false;
+
+    public static void showAllParens(boolean allParens) {
+        ALL_PARENS = allParens;
+    }
+
     private LogicOperator operator;
     private LogicExpression left;
     private LogicExpression right;
@@ -69,14 +75,14 @@ public class LogicClause extends LogicExpression {
     }
 
     public String toString(boolean latex) {
-        boolean lparen = !(left instanceof LogicSymbol ||
+        boolean lparen = ALL_PARENS || !(left instanceof LogicSymbol ||
                 (left instanceof LogicClause &&
                         (left.isNegated() ||
                                 ((this.getOperator() == LogicOperator.AND ||
                                         this.getOperator() == LogicOperator.OR) &&
                                         ((LogicClause) left).getOperator() == this.getOperator()) ||
                                 this.getOperator().ordinal() > ((LogicClause) left).getOperator().ordinal())));
-        boolean rparen = !(right instanceof LogicSymbol ||
+        boolean rparen = ALL_PARENS || !(right instanceof LogicSymbol ||
                 (right instanceof LogicClause &&
                         (right.isNegated() ||
                                 ((this.getOperator() == LogicOperator.AND ||
