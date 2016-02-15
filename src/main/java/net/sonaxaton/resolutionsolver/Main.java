@@ -18,6 +18,11 @@ public class Main {
             return;
         }
         args[0] = args[0].trim().toLowerCase();
+        if (!(args[0].equals("yes") || args[0].equals("true") || args[0].equals("y") ||
+                args[0].equals("no") || args[0].equals("false") || args[0].equals("n"))) {
+            usage();
+            return;
+        }
         USE_LATEX = args[0].equals("yes") || args[0].equals("true") || args[0].equals("y");
 
         Collection<LogicExpression> knowledgeBase = new ArrayList<>();
