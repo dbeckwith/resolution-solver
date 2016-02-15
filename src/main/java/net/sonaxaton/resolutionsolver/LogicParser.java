@@ -99,7 +99,12 @@ public class LogicParser {
             token.parenLevel = parenLevel;
 
             if (prevToken != null && prevToken.type == Token.Type.NEGATION) {
-                prevToken.parenLevel = token.parenLevel;
+                if (token.type == Token.Type.SYMBOL) {
+                    prevToken.parenLevel = -1;
+                }
+                else {
+                    prevToken.parenLevel = token.parenLevel;
+                }
             }
         }
 
